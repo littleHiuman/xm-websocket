@@ -6,16 +6,11 @@
 
 ## 命令
 
-### 安装依赖
-
-```
-npm install
-```
-
 ### 启动后端
 
 ```
 cd backend
+npm install
 node server.js
 ```
 
@@ -23,6 +18,7 @@ node server.js
 
 ```
 cd frontend
+npm install
 npm run dev
 ```
 
