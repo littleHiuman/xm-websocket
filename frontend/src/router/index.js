@@ -6,8 +6,7 @@ const Main = () => import('../pages/Main.vue')
 
 // 2. 定义路由
 const routes = [
-  { path: '/', name: 'Home', component: { template: '<div>Home</div>' } },
-  { path: '/enter-name', name: 'EnterName', component: EnterName },
+  { path: '/', name: 'EnterName', component: EnterName },
   { path: '/main', name: 'main', component: Main }
 ]
 

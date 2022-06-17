@@ -32,7 +32,7 @@ const name = props.loginName
 const router = useRouter()
 if (!name.length) {
   sessionStorage.setItem('xm-websocket', JSON.stringify([]))
-  router.push('/enter-name')
+  router.push('/')
 }
 const history = ref(JSON.parse(sessionStorage.getItem('xm-websocket')) || [])
 var ws
@@ -72,8 +72,18 @@ if (name.length) {
     console.log('onmessage', data);
     pushHistory(data)
   }
+  // 结束
+  ws.onclose = function close() {
+    console.log('disconnected');
+  }
+  window.onbeforeunload = beforeunloadHandle
 }
 
+function beforeunloadHandle(){
+  if(name.length && ws) {
+    sendMsg({ from: 'tips', name, message: `byebye ${name}!` })
+  }
+}
 function keyupHandle (e) {
   var keyCode = e.keyCode
   if (keyCode == 13) {
@@ -156,6 +166,7 @@ function pushHistory (data) {
 }
 
 .content-info {
+  min-height: 22px;
   display: inline-block;
   border-radius: 10px;
   padding: 5px;
