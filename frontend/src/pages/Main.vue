@@ -14,7 +14,9 @@
     </div>
     <div class="chat-input"
          contentEditable="true"
-         @keyup="keyupHandle"></div>
+         @keyup="keyupHandle"
+         @keypress="keypressHandle"
+         @keydown="keydownHandle"></div>
   </div>
 </template>
 
@@ -36,6 +38,8 @@ if (!name.length) {
 }
 const history = ref(JSON.parse(sessionStorage.getItem('xm-websocket')) || [])
 var ws
+var hasPressShift = ref(false)
+var hasPressEnter = ref(false)
 function scrollDown () {
   var container = document.querySelector('.chat-history')
   if (container) {
@@ -73,22 +77,40 @@ if (name.length) {
     pushHistory(data)
   }
   // 结束
-  ws.onclose = function close() {
+  ws.onclose = function close () {
     console.log('disconnected');
   }
   window.onbeforeunload = beforeunloadHandle
 }
 
-function beforeunloadHandle(){
-  if(name.length && ws) {
+function beforeunloadHandle () {
+  if (name.length && ws) {
     sendMsg({ from: 'tips', name, message: `byebye ${name}!` })
   }
 }
 function keyupHandle (e) {
   var keyCode = e.keyCode
+  if (keyCode == 16) {
+    hasPressShift.value = false
+  } else if(keyCode == 13) {
+    hasPressEnter.value = false
+  }
+}
+function keypressHandle (e) {
+  var keyCode = e.keyCode
   if (keyCode == 13) {
-    send(e)
-    return false
+    if (!hasPressShift.value) {
+      e.preventDefault();
+      send(e)
+    }
+  }
+}
+function keydownHandle(e){
+  var keyCode = e.keyCode
+  if (keyCode == 16) {
+    hasPressShift.value = true
+  } else if (keyCode == 13) {
+    hasPressEnter.value = true
   }
 }
 function send (e) {
